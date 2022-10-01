@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "315507012331",
+    "project_id": "shooter-7b75b",
+    "storage_bucket": "shooter-7b75b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:315507012331:android:498e815fc99ef1098244ae",
+        "android_client_info": {
+          "package_name": "com.BogdanAgeev.Shooter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "315507012331-q2runjgp05hfsef8odpf1ehq18j8phhj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgFTFgTmWJrZz_0f_Lcp1JvDT_UQn7wC0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "315507012331-q2runjgp05hfsef8odpf1ehq18j8phhj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
