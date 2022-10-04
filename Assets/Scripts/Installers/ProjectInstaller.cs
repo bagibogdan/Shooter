@@ -1,4 +1,3 @@
-using UnityEngine;
 using Zenject;
 using Managers;
 using SaveSystem;
@@ -15,7 +14,6 @@ public class ProjectInstaller : MonoInstaller
     
     private void BindSignals()
     {
-        Container.DeclareSignal<OnMovementStart>();
-        Container.DeclareSignal<OnMovementStop>();
+        
     }
 }

@@ -32,7 +32,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: WarriorDeath
+  m_Name: Death
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions: []
@@ -45,7 +45,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 389f6ac5530f2b44988125696695b8d1, type: 2}
+  m_Motion: {fileID: 7400000, guid: 5f4fb2a2651b68f43a4c787fa8f37799, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -204,8 +204,8 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SwordAttack
-  m_Speed: 2
+  m_Name: Attack
+  m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -3324773870529949310}
@@ -220,7 +220,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: c036ec1417e17ae4c8fa65ac8e7b9ae2, type: 2}
+  m_Motion: {fileID: 7400000, guid: a1d4bfd7b97ca584e95f125f2c3a0a73, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -233,7 +233,7 @@ AnimatorState:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: SlowRun
+  m_Name: Run
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -248,7 +248,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 1643822ed753f93488698f990904fed0, type: 2}
+  m_Motion: {fileID: 7400000, guid: 21286d4810fb2764eaa5347a899cf0fc, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -302,7 +302,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 7400000, guid: 9e25c7b4b98181747a7b1eba52192a38, type: 2}
+  m_Motion: {fileID: 7400000, guid: 464d28d48f4254b4199c74295bac702b, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
