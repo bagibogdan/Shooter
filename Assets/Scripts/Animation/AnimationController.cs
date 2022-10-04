@@ -3,11 +3,13 @@
 public class AnimationController : MonoBehaviour
 {
     private const string IDLE = "Idle";
-    private const string MOVE = "Move";
+    private const string RUN = "Run";
+    private const string WALK = "Walk";
     private const string ATTACK = "Attack";
     private const string DEATH = "Death";
     private static readonly int Idle = Animator.StringToHash(IDLE);
-    private static readonly int Move = Animator.StringToHash(MOVE);
+    private static readonly int Run = Animator.StringToHash(RUN);
+    private static readonly int Walk = Animator.StringToHash(WALK);
     private static readonly int Attack = Animator.StringToHash(ATTACK);
     private static readonly int Death = Animator.StringToHash(DEATH);
     
@@ -28,12 +30,21 @@ public class AnimationController : MonoBehaviour
         _currentAnimation = Idle;
     }
     
-    public void SetMoveAnimation()
+    public void SetRunMoveAnimation()
     {
-        if (_currentAnimation == Move) return;
+        if (_currentAnimation == Run) return;
         
-        _animator.SetTrigger(Move);
-        _currentAnimation = Move;
+        _animator.SetTrigger(Run);
+        _currentAnimation = Run;
+    }
+    
+    public void SetWalkMoveAnimation()
+    {
+        if (_currentAnimation == Walk) return;
+        
+        _animator.ResetTrigger(Idle);
+        _animator.SetTrigger(Walk);
+        _currentAnimation = Walk;
     }
     
     public void SetAttackAnimation()

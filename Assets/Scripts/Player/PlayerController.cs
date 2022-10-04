@@ -6,15 +6,14 @@ namespace Player
 {
     public class PlayerController : MonoBehaviour
     {
-        public bool IsMoving => _movement.IsMoving;
-
+        public Fighter PlayerFighter => _fighter;
+        
         private PlayerConfig _playerConfig;
         private PlayerMovement _movement;
         private Fighter _fighter;
         private Health _health;
         private AnimationController _animation;
-        private bool _isRewarded;
-        
+
         [Inject]
         public void Construct(PlayerConfig playerConfig)
         {
@@ -33,15 +32,19 @@ namespace Player
             
             _health.OnDie += _animation.SetDeathAnimation;
             _health.OnDie += _fighter.OnDie;
-            
+            _health.OnDie += _movement.DeactivateMoving;
+            _health.OnDie += OnDie;
+
             _fighter.OnStartFight += _animation.SetAttackAnimation;
             _fighter.OnResetFightTarget += _movement.UnsetLookingTarget;
             _fighter.OnSetFightTarget += _movement.SetLookingTarget;
             _fighter.OnStopFight += _animation.SetIdleAnimation;
             
-            _movement.OnMovementStart += _animation.SetMoveAnimation;
+            _movement.OnRunMovementStart += _animation.SetRunMoveAnimation;
+            _movement.OnWalkMovementStart += _animation.SetWalkMoveAnimation;
             _movement.OnMovementStop += _animation.SetIdleAnimation;
-            _movement.OnMovementStart += _fighter.ShootingDeactivate;
+            _movement.OnRunMovementStart += _fighter.ShootingDeactivate;
+            _movement.OnWalkMovementStart += _fighter.ShootingDeactivate;
             _movement.OnMovementStop += _fighter.ShootingActivate;
         }
         
@@ -49,16 +52,27 @@ namespace Player
         {
             _health.OnDie -= _animation.SetDeathAnimation;
             _health.OnDie -= _fighter.OnDie;
+            _health.OnDie -= _movement.DeactivateMoving;
+            _health.OnDie -= OnDie;
             
             _fighter.OnStartFight -= _animation.SetAttackAnimation;
             _fighter.OnResetFightTarget -= _movement.UnsetLookingTarget;
             _fighter.OnSetFightTarget -= _movement.SetLookingTarget;
             _fighter.OnStopFight -= _animation.SetIdleAnimation;
             
-            _movement.OnMovementStart -= _animation.SetMoveAnimation;
+            _movement.OnRunMovementStart -= _animation.SetRunMoveAnimation;
+            _movement.OnWalkMovementStart -= _animation.SetWalkMoveAnimation;
             _movement.OnMovementStop -= _animation.SetIdleAnimation;
-            _movement.OnMovementStart -= _fighter.ShootingDeactivate;
+            _movement.OnRunMovementStart -= _fighter.ShootingDeactivate;
+            _movement.OnRunMovementStart -= _fighter.ShootingDeactivate;
+            _movement.OnWalkMovementStart -= _fighter.ShootingDeactivate;
             _movement.OnMovementStop -= _fighter.ShootingActivate;
+        }
+
+        private void OnDie()
+        {
+            GetComponent<Collider>().enabled = false;
+            GetComponentInChildren<Animator>().applyRootMotion = true;
         }
         
         public void ActivateMoving()

@@ -3,10 +3,10 @@ using Zenject;
 
 namespace Weapons
 {
-    public class BennelliWeapon : Weapon
+    public class B52Weapon : Weapon
     {
         [Inject]
-        public void Construct(BennelliConfig config)
+        public void Construct(B52Config config)
         {
             _weaponConfig = config;
         }

@@ -7,11 +7,13 @@ using Zenject;
 public class GameSceneConfigInstaller : ScriptableObjectInstaller<GameSceneConfigInstaller>
 {
     [SerializeField] private PlayerConfig playerConfig;
-    [SerializeField] private EnemyConfig enemyConfig;
+
+    [Header("Enemies:")]
+    [SerializeField] private YellowEnemyConfig yellowEnemyConfig;
     
     [Header("Weapons:")]
     [SerializeField] private Ak47Config ak47Config;
-    [SerializeField] private BennelliConfig bennelliConfig;
+    [SerializeField] private B52Config b52Config;
     [SerializeField] private M4Config m4Config;
     [SerializeField] private M16Config m16Config;
     [SerializeField] private M107Config m107Config;
@@ -20,9 +22,11 @@ public class GameSceneConfigInstaller : ScriptableObjectInstaller<GameSceneConfi
     public override void InstallBindings()
     {
         Container.BindInstance(playerConfig);
-        Container.BindInstance(enemyConfig);
+        
+        Container.BindInstance(yellowEnemyConfig);
+        
         Container.BindInstance(ak47Config);
-        Container.BindInstance(bennelliConfig);
+        Container.BindInstance(b52Config);
         Container.BindInstance(m4Config);
         Container.BindInstance(m16Config);
         Container.BindInstance(m107Config);

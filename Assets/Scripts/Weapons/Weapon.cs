@@ -34,11 +34,12 @@ namespace Weapons
             _currentBulletsCount = _weaponConfig.BulletsCount;
         }
 
-        public void Initialize(Transform modelPosition, Transform shootingPoint)
+        public void Initialize(Fighter fighter, Transform modelPosition, Transform shootingPoint)
         {
             _weaponModel = Instantiate(_weaponConfig.WeaponModel, modelPosition);
             _weaponModel.transform.localPosition = Vector3.zero;
             _shootingPoint = shootingPoint;
+            _fighter = fighter;
         }
 
         public void Shoot(Vector3 direction)
@@ -87,6 +88,13 @@ namespace Weapons
         
         private void OnTriggerEnter(Collider other)
         {
+            OnEnemyFound?.Invoke(other.gameObject);
+        }
+
+        private void OnTriggerStay(Collider other)
+        {
+            if (_fighter.IsFight) return;
+            
             OnEnemyFound?.Invoke(other.gameObject);
         }
     }

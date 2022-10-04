@@ -10,9 +10,11 @@ public class Fighter : MonoBehaviour
     public event Action OnStopFight;
     public event Action<Transform> OnSetFightTarget;
     public event Action OnResetFightTarget;
+    public event Action OnEnemyFound;
     
     public bool IsFight { get; private set; } = false;
     public bool IsAlive { get; private set; } = true;
+    public Fighter CurrentEnemy => _currentEnemy;
 
     private const float DISTANCE_VARIATION = 2f;
     private Weapon _currentWeapon;
@@ -20,17 +22,23 @@ public class Fighter : MonoBehaviour
     private Coroutine _fightCoroutine;
     private Vector3 _shootDirection;
     private bool _isCanShoot;
+    private bool _isEnemyInitialized;
 
     public void Initialize(Fighter enemy = null)
     {
-        _currentEnemy ??= _currentEnemy = enemy;
+        if (enemy)
+        {
+            _currentEnemy = enemy;
+            _isEnemyInitialized = true;
+        }
         
         var weaponPosition = GetComponentInChildren<WeaponPlaceComponent>(true);
         var shootingPoint = GetComponentInChildren<ShootingPointComponent>(true);
         _currentWeapon = GetComponentInChildren<Weapon>(true);
-        _currentWeapon.Initialize(weaponPosition.gameObject.transform, shootingPoint.gameObject.transform);
+        _currentWeapon.Initialize(this, weaponPosition.gameObject.transform, shootingPoint.gameObject.transform);
         _currentWeapon.OnEnemyFound += OnEnemyFounded;
         _currentWeapon.OnStartReload += StopAttack;
+        ShootingActivate();
     }
 
     private void OnDestroy()
@@ -63,25 +71,29 @@ public class Fighter : MonoBehaviour
     public void OnDie()
     {
         ShootingDeactivate();
-        StopCoroutine(_fightCoroutine);
+        if (_fightCoroutine != null) StopCoroutine(_fightCoroutine);
         IsAlive = false;
         IsFight = false;
         _currentEnemy = null;
-        GetComponent<Collider>().enabled = false;
     }
 
     private void OnEnemyFounded(GameObject enemyObject)
     {
         if (IsFight) return;
         
-        if (enemyObject.TryGetComponent(out Fighter enemy))
+        OnEnemyFound?.Invoke();
+        
+        if (!_currentEnemy)
         {
+            enemyObject.TryGetComponent(out Fighter enemy);
             _currentEnemy = enemy;
-            IsFight = true;
-            OnSetFightTarget?.Invoke(_currentEnemy.transform);
-            
-            _fightCoroutine ??= StartCoroutine(Fighting());
         }
+        
+        if (!_currentEnemy) return;
+        
+        IsFight = true;
+        OnSetFightTarget?.Invoke(_currentEnemy.transform);
+        _fightCoroutine ??= StartCoroutine(Fighting());
     }
     
     private IEnumerator Fighting()
@@ -109,9 +121,10 @@ public class Fighter : MonoBehaviour
             }
         }
         
+        OnResetFightTarget?.Invoke();
         IsFight = false;
-        _currentEnemy = null;
-        StopCoroutine(_fightCoroutine);
+        if (!_isEnemyInitialized) _currentEnemy = null;
+        if (_fightCoroutine != null) StopCoroutine(_fightCoroutine);
         _fightCoroutine = null;
     }
 }
