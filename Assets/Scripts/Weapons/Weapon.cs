@@ -13,21 +13,24 @@ namespace Weapons
         public int Distance => _weaponConfig.ShootingDistance;
         public float ShootingSpeed => _weaponConfig.ShootingSpeed;
         public bool IsReloading => _isReloading;
-
-        private const float Y_ROTATION_OFFSET = 0.5150381f;
+        
         protected WeaponConfig _weaponConfig;
         private const float MILISECONDS = 0.1f;
         private Pool _bulletsPool;
         private Fighter _fighter;
         private int _currentBulletsCount;
         private bool _isReloading;
+        private bool _isStartReloading;
         private Coroutine _reloading;
         private GameObject _weaponModel;
         private Transform _shootingPoint;
+        private SphereCollider _collider;
 
         private void Awake()
         {
+            _collider = GetComponent<SphereCollider>();
             _bulletsPool = GetComponentInChildren<Pool>(true);
+            _collider.radius = _weaponConfig.ShootingDistance;
             _currentBulletsCount = _weaponConfig.BulletsCount;
         }
 
@@ -45,10 +48,6 @@ namespace Weapons
             var bullet = _bulletsPool.GetObject(null).GetComponent<Bullet>();
             var bulletTransform = bullet.transform;
             bulletTransform.position = _shootingPoint.position;
-            // var rotation = transform.parent.rotation;
-            // var yRotation = rotation.y - Y_ROTATION_OFFSET;
-            // rotation = new Quaternion(rotation.x, yRotation, rotation.z, rotation.w);
-            //bulletTransform.rotation = rotation;
             bulletTransform.rotation = Quaternion.LookRotation(direction);
             bullet.Initialize(_weaponConfig.DamageValue, _weaponConfig.BulletSpeed, direction);
 
@@ -61,20 +60,26 @@ namespace Weapons
         private void Reload()
         {
             _isReloading = true;
-            OnStartReload?.Invoke();
             _reloading = StartCoroutine(Reloading());
         }
 
         private IEnumerator Reloading()
         {
             var reloadTime = 0f;
+
             while (reloadTime < _weaponConfig.ReloadTime)
             {
                 reloadTime += MILISECONDS;
                 OnReload?.Invoke((int)(reloadTime * 10f));
                 yield return new WaitForSeconds(MILISECONDS);
+
+                if (_isStartReloading) continue;
+                
+                OnStartReload?.Invoke();
+                _isStartReloading = true;
             }
 
+            _isStartReloading = false;
             _isReloading = false;
             _currentBulletsCount = _weaponConfig.BulletsCount;
             StopCoroutine(_reloading);

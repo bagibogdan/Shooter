@@ -51,7 +51,7 @@ public class Fighter : MonoBehaviour
 
     private void StopAttack()
     {
-        OnResetFightTarget?.Invoke();
+        OnStopFight?.Invoke();
     }
 
     private bool IsEnemyInAttackZone()
@@ -105,7 +105,7 @@ public class Fighter : MonoBehaviour
             else
             {
                 IsFight = false;
-                OnStopFight?.Invoke();
+                OnResetFightTarget?.Invoke();
             }
         }
         

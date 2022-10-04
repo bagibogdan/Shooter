@@ -35,9 +35,9 @@ namespace Player
             _health.OnDie += _fighter.OnDie;
             
             _fighter.OnStartFight += _animation.SetAttackAnimation;
-            _fighter.OnResetFightTarget += _animation.SetIdleAnimation;
+            _fighter.OnResetFightTarget += _movement.UnsetLookingTarget;
             _fighter.OnSetFightTarget += _movement.SetLookingTarget;
-            _fighter.OnStopFight += _movement.UnsetLookingTarget;
+            _fighter.OnStopFight += _animation.SetIdleAnimation;
             
             _movement.OnMovementStart += _animation.SetMoveAnimation;
             _movement.OnMovementStop += _animation.SetIdleAnimation;
@@ -51,9 +51,9 @@ namespace Player
             _health.OnDie -= _fighter.OnDie;
             
             _fighter.OnStartFight -= _animation.SetAttackAnimation;
-            _fighter.OnResetFightTarget -= _animation.SetIdleAnimation;
+            _fighter.OnResetFightTarget -= _movement.UnsetLookingTarget;
             _fighter.OnSetFightTarget -= _movement.SetLookingTarget;
-            _fighter.OnStopFight -= _movement.UnsetLookingTarget;
+            _fighter.OnStopFight -= _animation.SetIdleAnimation;
             
             _movement.OnMovementStart -= _animation.SetMoveAnimation;
             _movement.OnMovementStop -= _animation.SetIdleAnimation;

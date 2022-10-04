@@ -38,8 +38,6 @@ public class AnimationController : MonoBehaviour
     
     public void SetAttackAnimation()
     {
-        if (_currentAnimation == Attack) return;
-        
         _animator.SetTrigger(Attack);
         _currentAnimation = Attack;
     }

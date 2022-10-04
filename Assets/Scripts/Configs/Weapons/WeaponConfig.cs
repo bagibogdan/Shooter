@@ -12,6 +12,7 @@ namespace Configs.Weapons
         [SerializeField] protected int _bulletsCount;
         [SerializeField] protected float _bulletSpeed;
         [SerializeField] protected float _reloadTime;
+        [SerializeField] protected int _price;
 
         public string Name => _name;
         public GameObject WeaponModel => _weaponModel;
@@ -21,5 +22,6 @@ namespace Configs.Weapons
         public int BulletsCount => _bulletsCount;
         public float BulletSpeed => _bulletSpeed;
         public float ReloadTime => _reloadTime;
+        public float Price => _price;
     }
 }
