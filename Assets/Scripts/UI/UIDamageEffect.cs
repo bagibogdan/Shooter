@@ -7,8 +7,8 @@ namespace UI
 {
     public class UIDamageEffect : MonoBehaviour, IPoolInitializable
     {
-        private const float MOVING_OFFSET = 2f;
-        private const float MOVING_SPEED = 1f;
+        private const float MOVING_OFFSET = 1.5f;
+        private const float MOVING_SPEED = 2f;
         private const float MIN_ALPHA = 0f;
         private const float MAX_ALPHA = 1f;
         private const float EFFECT_DURATION = 0.3f;

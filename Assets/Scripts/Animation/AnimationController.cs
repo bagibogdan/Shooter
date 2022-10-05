@@ -59,6 +59,7 @@ public class AnimationController : MonoBehaviour
     {
         if (_currentAnimation == Death) return;
         
+        _animator.applyRootMotion = true;
         _animator.SetTrigger(Death);
         _currentAnimation = Death;
     }

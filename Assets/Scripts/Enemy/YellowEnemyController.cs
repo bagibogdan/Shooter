@@ -1,7 +1,6 @@
 ﻿using Zenject;
 using Configs;
 using Level;
-using UI;
 
 namespace Enemy
 {

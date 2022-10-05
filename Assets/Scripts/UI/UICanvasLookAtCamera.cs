@@ -13,19 +13,25 @@ namespace UI
         {
             _uiObjectsController = uiObjectsController;
         }
-    
-        protected void Awake()
+        
+        private void Awake()
         {
             _uiObjectsController = FindObjectOfType<UIObjectsController>();
         }
-
-        protected void OnEnable()
+        
+        private void Start()
         {
             _lookRotation = _uiObjectsController.LookDirection;
             transform.rotation = _lookRotation;
         }
 
-        protected void LateUpdate()
+        private void OnEnable()
+        {
+            _lookRotation = _uiObjectsController.LookDirection;
+            transform.rotation = _lookRotation;
+        }
+
+        private void LateUpdate()
         {
             transform.rotation = _lookRotation;
         }

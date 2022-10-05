@@ -17,17 +17,21 @@ namespace UI
         private Quaternion _lookDirection = Quaternion.identity;
 
         [Inject]
-        public void Construct(Pool damageViewPool, CinemachineVirtualCamera virtualCamera)
+        public void Construct(Pool damageViewPool,
+            CinemachineVirtualCamera virtualCamera,
+            PlayerController playerController)
         {
             _damageViewPool = damageViewPool;
             _camera = virtualCamera;
+            _playerObject = playerController.gameObject;
         }
     
         private void Awake()
         {
             _damageViewPool.Initialize();
+            PlayerViewRotationCalculate();
         }
-    
+
         private void PlayerViewRotationCalculate()
         {
             var cameraPosition = _camera.transform.position;
@@ -43,7 +47,6 @@ namespace UI
         public void UpdateViewObjectsList()
         {
             _viewObjects.AddRange(FindObjectsOfType<UICanvasLookAtCamera>(true));
-            _playerObject = FindObjectOfType<PlayerController>().gameObject;
 
             foreach (var uiObject in _viewObjects)
             {
@@ -53,8 +56,6 @@ namespace UI
 
         public void ViewObjectsActivate()
         {
-            PlayerViewRotationCalculate();
-
             foreach (var uiObject in _viewObjects)
             {
                 uiObject.gameObject.SetActive(true);

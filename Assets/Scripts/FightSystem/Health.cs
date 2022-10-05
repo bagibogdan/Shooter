@@ -8,6 +8,7 @@ public class Health : MonoBehaviour
     public event Action OnDie;
     public event Action<int> OnHealthChanged;
     public event Action<int> OnTakeDamage;
+    public event Action OnDamageDetected;
     
     private int _maxHealthValue;
     private int _currentHealthValue;
@@ -24,6 +25,7 @@ public class Health : MonoBehaviour
 
         _currentHealthValue -= damageValue;
         OnTakeDamage?.Invoke(damageValue);
+        OnDamageDetected?.Invoke();
 
         if (_currentHealthValue < 0) _currentHealthValue = 0;
         

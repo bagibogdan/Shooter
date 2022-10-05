@@ -90,6 +90,18 @@ public class Fighter : MonoBehaviour
         _fightCoroutine ??= StartCoroutine(Fighting());
     }
     
+    public void OnEnemyFoundedOnShoot()
+    {
+        if (IsFight) return;
+
+        if (!_currentEnemy) return;
+        
+        OnEnemyFound?.Invoke();
+        IsFight = true;
+        OnSetFightTarget?.Invoke(_currentEnemy.transform);
+        _fightCoroutine ??= StartCoroutine(Fighting());
+    }
+    
     private IEnumerator Fighting()
     {
         while (_currentEnemy && _currentEnemy.IsAlive && IsFight)

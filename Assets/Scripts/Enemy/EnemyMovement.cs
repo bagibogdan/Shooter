@@ -11,17 +11,19 @@ namespace Enemy
         public event Action OnWalkMovementStart;
         public event Action OnMovementStop;
 
+        public event Action OnMovementPoint;
+
         public bool IsMoving => _isMoving;
         
         private const float Y_ROTATION_OFFSET_0 = 0.5150381f; // Model rotation offset for firing animation
         private const float Y_ROTATION_OFFSET_180 = 62f; // Model rotation offset for firing animation
         
         protected EnemyConfig _enemyConfig;
+        protected Transform _player;
         private Vector3 _lookingDirection = Vector3.zero;
         private Vector3 _movingToPoint;
         private Transform _transform;
         private Transform _target;
-        private Transform _player;
         private NavMeshAgent _navMeshAgent;
         private bool _isMoving;
         private bool _isLooking;
@@ -39,7 +41,15 @@ namespace Enemy
             {
                 if (_movingToPoint == Vector3.zero)
                 {
-                    StartRunMove(_player);
+                    StartRunMove(_player.position);
+                    return;
+                }
+                
+                if (transform.position.x == _movingToPoint.x && transform.position.z == _movingToPoint.z)
+                {
+                    OnMovementStop?.Invoke();
+                    _isMoving = false;
+                    OnMovementPoint?.Invoke();
                 }
                 return;
             }
@@ -53,29 +63,28 @@ namespace Enemy
             }
         }
         
-        public void StartWalkMove(Transform movingPoint)
+        public void StartWalkMove(Vector3 movingPoint)
         {
             _navMeshAgent.isStopped = false;
-            _navMeshAgent.speed = _enemyConfig.MovementSpeed / 2f;
-            _movingToPoint = movingPoint.position;
+            _navMeshAgent.speed = _enemyConfig.MovementSpeed / 5f;
+            _movingToPoint = movingPoint;
             MoveToPoint(movingPoint);
             OnWalkMovementStart?.Invoke();
         }        
         
-        public void StartRunMove(Transform movingPoint)
+        public void StartRunMove(Vector3 movingPoint)
         {
             _navMeshAgent.isStopped = false;
             _navMeshAgent.speed = _enemyConfig.MovementSpeed;
-            _player = movingPoint;
             _movingToPoint = Vector3.zero;
             MoveToPoint(movingPoint);
             OnRunMovementStart?.Invoke();
         }
         
-        private void MoveToPoint(Transform targetPoint)
+        private void MoveToPoint(Vector3 targetPoint)
         {
             _isMoving = true;
-            _navMeshAgent.SetDestination(targetPoint.position);
+            _navMeshAgent.SetDestination(targetPoint);
         }
 
         public void StopMoving()
@@ -129,10 +138,13 @@ namespace Enemy
         private void OnTriggerEnter(Collider other)
         {
             if (!_isMoving) return;
-        
+            
             if (other.gameObject.transform.position == _movingToPoint)
             {
+                OnMovementStop?.Invoke();
+                other.gameObject.SetActive(false);
                 _isMoving = false;
+                OnMovementPoint?.Invoke();
             }
         }
     }

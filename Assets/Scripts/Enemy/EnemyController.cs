@@ -39,6 +39,7 @@ namespace Enemy
             _health.OnDie += OnDie;
             _health.OnDie += _uiWeaponView.Deactivate;
             _health.OnTakeDamage += _uiDamageViewer.DamageValueEffect;
+            _health.OnDamageDetected += _fighter.OnEnemyFoundedOnShoot;
             _health.OnHealthChanged += _uiHealthView.HealthView;
 
             _fighter.OnStartFight += _animation.SetAttackAnimation;
@@ -53,6 +54,7 @@ namespace Enemy
             _movement.OnRunMovementStart += _fighter.ShootingDeactivate;
             _movement.OnWalkMovementStart += _fighter.ShootingDeactivate;
             _movement.OnMovementStop += _fighter.ShootingActivate;
+            _movement.OnMovementPoint += WalkToNewPoint;
             
             _weapon.OnEnemyFound += _fighter.OnEnemyFounded;
             _weapon.OnStartReload += _fighter.StopAttack;
@@ -73,7 +75,7 @@ namespace Enemy
         {
             if (_fighter.CurrentEnemy != null && !_fighter.IsFight && !_movement.IsMoving)
             {
-                _movement.StartRunMove(_playerFighter.gameObject.transform);
+                _movement.StartRunMove(_playerFighter.gameObject.transform.position);
             }
         }
         
@@ -85,6 +87,7 @@ namespace Enemy
             _health.OnDie -= OnDie;
             _health.OnDie -= _uiWeaponView.Deactivate;
             _health.OnTakeDamage -= _uiDamageViewer.DamageValueEffect;
+            _health.OnDamageDetected -= _fighter.OnEnemyFoundedOnShoot;
             _health.OnHealthChanged -= _uiHealthView.HealthView;
             
             _fighter.OnStartFight -= _animation.SetAttackAnimation;
@@ -100,17 +103,22 @@ namespace Enemy
             _movement.OnRunMovementStart -= _fighter.ShootingDeactivate;
             _movement.OnWalkMovementStart -= _fighter.ShootingDeactivate;
             _movement.OnMovementStop -= _fighter.ShootingActivate;
+            _movement.OnMovementPoint -= WalkToNewPoint;
             
             _weapon.OnEnemyFound -= _fighter.OnEnemyFounded;
             _weapon.OnStartReload -= _fighter.StopAttack;
             _weapon.OnShoot -= _uiWeaponView.BulletsView;
             _weapon.OnReload -= _uiWeaponView.ReloadView;
         }
+
+        private void WalkToNewPoint()
+        {
+            _movement.StartWalkMove(_levelController.GetMovementPoint());
+        }
         
         private void OnDie()
         {
             GetComponent<Collider>().enabled = false;
-            GetComponentInChildren<Animator>().applyRootMotion = true;
         }
     }
 }

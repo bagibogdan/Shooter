@@ -101,7 +101,6 @@ namespace Player
         private void OnDie()
         {
             GetComponent<Collider>().enabled = false;
-            GetComponentInChildren<Animator>().applyRootMotion = true;
         }
         
         public void ActivateMoving()

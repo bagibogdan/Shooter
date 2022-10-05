@@ -10,6 +10,8 @@ public class GameSceneConfigInstaller : ScriptableObjectInstaller<GameSceneConfi
 
     [Header("Enemies:")]
     [SerializeField] private YellowEnemyConfig yellowEnemyConfig;
+    [SerializeField] private WhiteEnemyConfig whiteEnemyConfig;
+    [SerializeField] private RedEnemyConfig redEnemyConfig;
     
     [Header("Weapons:")]
     [SerializeField] private Ak47Config ak47Config;
@@ -23,7 +25,7 @@ public class GameSceneConfigInstaller : ScriptableObjectInstaller<GameSceneConfi
     {
         Container.BindInstance(playerConfig);
         
-        Container.BindInstance(yellowEnemyConfig);
+        Container.BindInstances(yellowEnemyConfig, whiteEnemyConfig, redEnemyConfig);
         
         Container.BindInstance(ak47Config);
         Container.BindInstance(b52Config);
