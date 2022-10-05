@@ -15,19 +15,21 @@ namespace Enemy
         
         private const float Y_ROTATION_OFFSET_0 = 0.5150381f; // Model rotation offset for firing animation
         private const float Y_ROTATION_OFFSET_180 = 62f; // Model rotation offset for firing animation
+        
         protected EnemyConfig _enemyConfig;
         private Vector3 _lookingDirection = Vector3.zero;
+        private Vector3 _movingToPoint;
         private Transform _transform;
         private Transform _target;
         private Transform _player;
         private NavMeshAgent _navMeshAgent;
         private bool _isMoving;
         private bool _isLooking;
-        private Vector3 _movingToPoint;
 
         private void Awake()
         {
             _navMeshAgent = GetComponent<NavMeshAgent>();
+            _navMeshAgent.speed = _enemyConfig.MovementSpeed;
             _transform = transform;
         }
         
@@ -53,19 +55,27 @@ namespace Enemy
         
         public void StartWalkMove(Transform movingPoint)
         {
-            MoveToPoint(movingPoint);
             _navMeshAgent.isStopped = false;
+            _navMeshAgent.speed = _enemyConfig.MovementSpeed / 2f;
             _movingToPoint = movingPoint.position;
+            MoveToPoint(movingPoint);
             OnWalkMovementStart?.Invoke();
         }        
         
         public void StartRunMove(Transform movingPoint)
         {
-            MoveToPoint(movingPoint);
             _navMeshAgent.isStopped = false;
+            _navMeshAgent.speed = _enemyConfig.MovementSpeed;
             _player = movingPoint;
             _movingToPoint = Vector3.zero;
+            MoveToPoint(movingPoint);
             OnRunMovementStart?.Invoke();
+        }
+        
+        private void MoveToPoint(Transform targetPoint)
+        {
+            _isMoving = true;
+            _navMeshAgent.SetDestination(targetPoint.position);
         }
 
         public void StopMoving()
@@ -81,12 +91,6 @@ namespace Enemy
             _isLooking = false;            
         }
 
-        private void MoveToPoint(Transform targetPoint)
-        {
-            _isMoving = true;
-            _navMeshAgent.SetDestination(targetPoint.position);
-        }
-        
         public void SetLookingTarget(Transform target)
         {
             if (!_target) _target = target;

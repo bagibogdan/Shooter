@@ -1,6 +1,5 @@
 ﻿using Zenject;
 using Configs;
-using Level;
 
 namespace Enemy
 {

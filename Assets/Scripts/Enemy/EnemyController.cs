@@ -2,19 +2,25 @@ using UnityEngine;
 using Zenject;
 using Configs;
 using Level;
+using UI;
+using Weapons;
 
 namespace Enemy
 {
     public abstract class EnemyController : MonoBehaviour
     {
-        protected EnemyConfig _enemyConfig;
         protected SignalBus _signalBus;
-        private EnemyMovement _movement;
+        protected EnemyConfig _enemyConfig;
         protected Fighter _playerFighter;
+        protected LevelController _levelController;
+        private EnemyMovement _movement;
         private Fighter _fighter;
         private Health _health;
+        private UIDamageViewer _uiDamageViewer;
+        private UIHealthView _uiHealthView;
         private AnimationController _animation;
-        protected LevelController _levelController;
+        private UIWeaponView _uiWeaponView;
+        private Weapon _weapon;
 
         private void Awake()
         {
@@ -22,11 +28,18 @@ namespace Enemy
             _movement = GetComponent<EnemyMovement>();
             _fighter = GetComponent<Fighter>();
             _health = GetComponent<Health>();
+            _uiDamageViewer = GetComponent<UIDamageViewer>();
+            _uiHealthView = GetComponentInChildren<UIHealthView>();
+            _uiWeaponView = GetComponentInChildren<UIWeaponView>();
+            _weapon = GetComponentInChildren<Weapon>();
 
             _health.OnDie += _animation.SetDeathAnimation;
             _health.OnDie += _fighter.OnDie;
             _health.OnDie += _movement.Reset;
             _health.OnDie += OnDie;
+            _health.OnDie += _uiWeaponView.Deactivate;
+            _health.OnTakeDamage += _uiDamageViewer.DamageValueEffect;
+            _health.OnHealthChanged += _uiHealthView.HealthView;
 
             _fighter.OnStartFight += _animation.SetAttackAnimation;
             _fighter.OnResetFightTarget += _movement.UnsetLookingTarget;
@@ -40,12 +53,19 @@ namespace Enemy
             _movement.OnRunMovementStart += _fighter.ShootingDeactivate;
             _movement.OnWalkMovementStart += _fighter.ShootingDeactivate;
             _movement.OnMovementStop += _fighter.ShootingActivate;
+            
+            _weapon.OnEnemyFound += _fighter.OnEnemyFounded;
+            _weapon.OnStartReload += _fighter.StopAttack;
+            _weapon.OnShoot += _uiWeaponView.BulletsView;
+            _weapon.OnReload += _uiWeaponView.ReloadView;
         }
 
         private void Start()
         {
             _fighter.Initialize(_playerFighter);
             _health.Initialize(_enemyConfig.MaxHealth);
+            _uiHealthView.Initialize(_health);
+            _uiWeaponView.Initialize(_weapon);
             _movement.StartWalkMove(_levelController.GetMovementPoint());
         }
 
@@ -63,6 +83,9 @@ namespace Enemy
             _health.OnDie -= _fighter.OnDie;
             _health.OnDie -= _movement.Reset;
             _health.OnDie -= OnDie;
+            _health.OnDie -= _uiWeaponView.Deactivate;
+            _health.OnTakeDamage -= _uiDamageViewer.DamageValueEffect;
+            _health.OnHealthChanged -= _uiHealthView.HealthView;
             
             _fighter.OnStartFight -= _animation.SetAttackAnimation;
             _fighter.OnResetFightTarget -= _movement.UnsetLookingTarget;
@@ -77,6 +100,11 @@ namespace Enemy
             _movement.OnRunMovementStart -= _fighter.ShootingDeactivate;
             _movement.OnWalkMovementStart -= _fighter.ShootingDeactivate;
             _movement.OnMovementStop -= _fighter.ShootingActivate;
+            
+            _weapon.OnEnemyFound -= _fighter.OnEnemyFounded;
+            _weapon.OnStartReload -= _fighter.StopAttack;
+            _weapon.OnShoot -= _uiWeaponView.BulletsView;
+            _weapon.OnReload -= _uiWeaponView.ReloadView;
         }
         
         private void OnDie()

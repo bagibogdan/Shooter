@@ -35,16 +35,9 @@ public class Fighter : MonoBehaviour
         var weaponPosition = GetComponentInChildren<WeaponPlaceComponent>(true);
         var shootingPoint = GetComponentInChildren<ShootingPointComponent>(true);
         _currentWeapon = GetComponentInChildren<Weapon>(true);
-        _currentWeapon.Initialize(this, weaponPosition.gameObject.transform, shootingPoint.gameObject.transform);
-        _currentWeapon.OnEnemyFound += OnEnemyFounded;
-        _currentWeapon.OnStartReload += StopAttack;
+        _currentWeapon.Initialize(this, weaponPosition.gameObject.transform,
+            shootingPoint.gameObject.transform);
         ShootingActivate();
-    }
-
-    private void OnDestroy()
-    {
-        _currentWeapon.OnEnemyFound -= OnEnemyFounded;
-        _currentWeapon.OnStartReload -= StopAttack;
     }
 
     public void ShootingActivate()
@@ -57,7 +50,7 @@ public class Fighter : MonoBehaviour
         _isCanShoot = false;
     }
 
-    private void StopAttack()
+    public void StopAttack()
     {
         OnStopFight?.Invoke();
     }
@@ -71,18 +64,18 @@ public class Fighter : MonoBehaviour
     public void OnDie()
     {
         ShootingDeactivate();
+        OnResetFightTarget?.Invoke();
         if (_fightCoroutine != null) StopCoroutine(_fightCoroutine);
+        _currentWeapon.gameObject.SetActive(false);
         IsAlive = false;
         IsFight = false;
         _currentEnemy = null;
     }
 
-    private void OnEnemyFounded(GameObject enemyObject)
+    public void OnEnemyFounded(GameObject enemyObject)
     {
         if (IsFight) return;
-        
-        OnEnemyFound?.Invoke();
-        
+
         if (!_currentEnemy)
         {
             enemyObject.TryGetComponent(out Fighter enemy);
@@ -91,6 +84,7 @@ public class Fighter : MonoBehaviour
         
         if (!_currentEnemy) return;
         
+        OnEnemyFound?.Invoke();
         IsFight = true;
         OnSetFightTarget?.Invoke(_currentEnemy.transform);
         _fightCoroutine ??= StartCoroutine(Fighting());

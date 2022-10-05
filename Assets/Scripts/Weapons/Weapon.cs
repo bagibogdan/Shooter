@@ -8,10 +8,13 @@ namespace Weapons
     public abstract class Weapon : MonoBehaviour
     {
         public event Action<GameObject> OnEnemyFound;
+        public event Action<int> OnShoot;
         public event Action OnStartReload;
         public event Action<int> OnReload;
         public int Distance => _weaponConfig.ShootingDistance;
         public float ShootingSpeed => _weaponConfig.ShootingSpeed;
+        public float BulletsCount => _weaponConfig.BulletsCount;
+        public float ReloadTime => _weaponConfig.ReloadTime;
         public bool IsReloading => _isReloading;
         
         protected WeaponConfig _weaponConfig;
@@ -56,6 +59,8 @@ namespace Weapons
             {
                 Reload();
             }
+            
+            OnShoot?.Invoke(_currentBulletsCount);
         }
 
         private void Reload()
