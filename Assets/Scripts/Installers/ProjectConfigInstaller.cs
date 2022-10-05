@@ -6,5 +6,6 @@ public class ProjectConfigInstaller : ScriptableObjectInstaller<ProjectConfigIns
 {
     public override void InstallBindings()
     {
+        
     }
 }

@@ -7,6 +7,7 @@ using Zenject;
 public class GameSceneConfigInstaller : ScriptableObjectInstaller<GameSceneConfigInstaller>
 {
     [SerializeField] private PlayerConfig playerConfig;
+    [SerializeField] private EnemiesControllerConfig enemiesControllerConfig;
 
     [Header("Enemies:")]
     [SerializeField] private YellowEnemyConfig yellowEnemyConfig;
@@ -24,6 +25,7 @@ public class GameSceneConfigInstaller : ScriptableObjectInstaller<GameSceneConfi
     public override void InstallBindings()
     {
         Container.BindInstance(playerConfig);
+        Container.BindInstance(enemiesControllerConfig);
         
         Container.BindInstances(yellowEnemyConfig, whiteEnemyConfig, redEnemyConfig);
         
