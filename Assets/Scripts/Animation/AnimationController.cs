@@ -34,6 +34,7 @@ public class AnimationController : MonoBehaviour
     {
         if (_currentAnimation == Run) return;
         
+        _animator.ResetTrigger(Idle);
         _animator.SetTrigger(Run);
         _currentAnimation = Run;
     }
@@ -49,6 +50,7 @@ public class AnimationController : MonoBehaviour
     
     public void SetAttackAnimation()
     {
+        _animator.ResetTrigger(Idle);
         _animator.SetTrigger(Attack);
         _currentAnimation = Attack;
     }

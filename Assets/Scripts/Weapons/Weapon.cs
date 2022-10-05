@@ -11,23 +11,25 @@ namespace Weapons
         public event Action<int> OnShoot;
         public event Action OnStartReload;
         public event Action<int> OnReload;
+        
         public int Distance => _weaponConfig.ShootingDistance;
         public float ShootingSpeed => _weaponConfig.ShootingSpeed;
         public float BulletsCount => _weaponConfig.BulletsCount;
         public float ReloadTime => _weaponConfig.ReloadTime;
         public bool IsReloading => _isReloading;
         
-        protected WeaponConfig _weaponConfig;
         private const float MILISECONDS = 0.1f;
-        private Pool _bulletsPool;
+        
+        protected WeaponConfig _weaponConfig;
         private Fighter _fighter;
-        private int _currentBulletsCount;
-        private bool _isReloading;
-        private bool _isStartReloading;
+        private Pool _bulletsPool;
         private Coroutine _reloading;
         private GameObject _weaponModel;
         private Transform _shootingPoint;
         private SphereCollider _collider;
+        private int _currentBulletsCount;
+        private bool _isReloading;
+        private bool _isStartReloading;
 
         private void Awake()
         {
@@ -71,11 +73,11 @@ namespace Weapons
 
         private IEnumerator Reloading()
         {
-            var reloadTime = 0f;
+            var reloadTime = _weaponConfig.ReloadTime;
 
-            while (reloadTime < _weaponConfig.ReloadTime)
+            while (reloadTime > 0)
             {
-                reloadTime += MILISECONDS;
+                reloadTime -= MILISECONDS;
                 OnReload?.Invoke((int)(reloadTime * 10f));
                 yield return new WaitForSeconds(MILISECONDS);
 
@@ -84,10 +86,11 @@ namespace Weapons
                 OnStartReload?.Invoke();
                 _isStartReloading = true;
             }
-
+            
             _isStartReloading = false;
             _isReloading = false;
             _currentBulletsCount = _weaponConfig.BulletsCount;
+            OnShoot?.Invoke(_currentBulletsCount);
             StopCoroutine(_reloading);
         }
         

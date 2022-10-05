@@ -15,18 +15,18 @@ namespace Player
         private const float SPEED_COEFFICIENT = 50f;
         private const float Y_ROTATION_OFFSET_0 = 0.5150381f; // Model rotation offset for firing animation
         private const float Y_ROTATION_OFFSET_180 = 62f; // Model rotation offset for firing animation
+        
         private PlayerConfig _playerConfig;
         private PlayerInput _playerInput;
+        private Transform _transform;
+        private Transform _target;
+        private Rigidbody _rigidbody;
         private Vector3 _velocity = Vector3.zero;
         private Vector3 _lookingDirection = Vector3.zero;
-        private Joystick _joystick;
-        private Transform _transform;
-        private Rigidbody _rigidbody;
+        private float _runMinSpeed;
         private bool _isCanMove;
         private bool _isMoving;
         private bool _isLooking;
-        private Transform _target;
-        private float _runMinSpeed;
     
         [Inject]
         public void Construct(PlayerConfig playerConfig, PlayerInput playerInput)
@@ -58,7 +58,6 @@ namespace Player
             }
             else
             {
-                OnMovementStop?.Invoke();
                 _isMoving = false;
             }
         }
@@ -67,6 +66,7 @@ namespace Player
         {
             if (!_isMoving)
             {
+                OnMovementStop?.Invoke();
                 _rigidbody.velocity = Vector3.zero;
                 _rigidbody.angularVelocity = Vector3.zero;
                 return;
@@ -88,13 +88,6 @@ namespace Player
 
         public void ActivateMoving()
         {
-            _joystick = FindObjectOfType<Joystick>();
-        
-            if (_joystick is null)
-            {
-                throw new NullReferenceException(nameof(Joystick));
-            }
-        
             _isCanMove = true;
         }
     
