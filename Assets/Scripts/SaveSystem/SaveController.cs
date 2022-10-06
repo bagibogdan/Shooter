@@ -1,30 +1,22 @@
-﻿using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace SaveSystem
 {
     public class SaveController
     {
-        private const string PATH = "/gameData.data";
+        private const string SAVE_KEY = "DataGame";
 
-        public void SaveData(GameData gameData)
+        public void SaveData(GameData data)
         {
-            var dataStream = new FileStream(Application.persistentDataPath + PATH, FileMode.OpenOrCreate);
-            var converter = new BinaryFormatter();
-            converter.Serialize(dataStream, gameData);
-            dataStream.Close();
+            string json = JsonUtility.ToJson(data);
+            PlayerPrefs.SetString(SAVE_KEY, json);
         }
 
         public GameData LoadData()
         {
-            if (File.Exists(Application.persistentDataPath + PATH))
+            if (PlayerPrefs.HasKey(SAVE_KEY))
             {
-                var dataStream = new FileStream(Application.persistentDataPath + PATH, FileMode.Open);
-                var converter = new BinaryFormatter();
-                var gameData = converter.Deserialize(dataStream) as GameData;
-                dataStream.Close();
-                return gameData;
+                return JsonUtility.FromJson<GameData>(PlayerPrefs.GetString(SAVE_KEY));
             }
             else
             {

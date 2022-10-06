@@ -1,37 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
+using Components;
 using UnityEngine;
+using UnityEngine.AI;
 using Random = UnityEngine.Random;
 
 namespace Level
 {
     public class LevelController : MonoBehaviour
     {
+        // Without Zenject
         [SerializeField] private GameObject _obstaclePrefab;
         [SerializeField] private GameObject _movementPoint;
+
+        public Vector3 StartPosition => _startPosition;
 
         private const float START_OBSTACLE_Z_OFFSET = 10f;
         private const float START_OBSTACLE_X_OFFSET = 5f;
         private const float OBSTACLES_Z_STEP = 12f;
-        
+
+        private FinishComponent _finish;
         private List<Transform> _movementPoints = new List<Transform>();
         private Transform _playingAreaTransform;
         private Transform _levelTransform;
         private Vector3 _playingAreaScale;
         private Vector3 _levelPosition;
+        private Vector3 _startPosition;
 
         private void Awake()
         {
+            _startPosition = GetComponentInChildren<StartPointComponent>().gameObject.transform.position;
             _playingAreaTransform = GetComponentInChildren<PlayingAreaComponent>().gameObject.transform;
             _playingAreaScale = _playingAreaTransform.localScale;
             _levelTransform = gameObject.transform;
             _levelPosition = _levelTransform.position;
-            GenerateLevel();
         }
         
-        public void GenerateLevel()
+        public void GenerateLevel(int levelIndex)
         {
-            int levelIndex = 1;
             if (levelIndex <= 0)
             {
                 throw new ArgumentOutOfRangeException(nameof(levelIndex));
@@ -93,6 +99,18 @@ namespace Level
             var point = _movementPoints[Random.Range(0, _movementPoints.Count)];
             _movementPoints.Remove(point);
             return point.position;
+        }
+
+        public void ClearLevel()
+        {
+            var clearedObjects = new List<NavMeshObstacle>();
+            
+            clearedObjects.AddRange(GetComponentsInChildren<NavMeshObstacle>());
+
+            foreach (var obstacle in clearedObjects)
+            {
+                Destroy(obstacle.gameObject);
+            }
         }
     }
 }

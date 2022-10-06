@@ -1,7 +1,7 @@
 using UnityEngine;
-using Zenject;
 using Configs;
 using Level;
+using Managers;
 using UI;
 using Weapons;
 
@@ -9,10 +9,10 @@ namespace Enemy
 {
     public abstract class EnemyController : MonoBehaviour
     {
-        protected SignalBus _signalBus;
         protected EnemyConfig _enemyConfig;
         protected Fighter _playerFighter;
         protected LevelController _levelController;
+        private GameManager _gameManager;
         private EnemyMovement _movement;
         private Fighter _fighter;
         private Health _health;
@@ -21,7 +21,7 @@ namespace Enemy
         private AnimationController _animation;
         private UIWeaponView _uiWeaponView;
         private Weapon _weapon;
-
+        
         private void Awake()
         {
             _animation = GetComponent<AnimationController>();
@@ -32,12 +32,14 @@ namespace Enemy
             _uiHealthView = GetComponentInChildren<UIHealthView>();
             _uiWeaponView = GetComponentInChildren<UIWeaponView>();
             _weapon = GetComponentInChildren<Weapon>();
+            _gameManager = FindObjectOfType<GameManager>();
 
             _health.OnDie += _animation.SetDeathAnimation;
             _health.OnDie += _fighter.OnDie;
             _health.OnDie += _movement.Reset;
             _health.OnDie += OnDie;
             _health.OnDie += _uiWeaponView.Deactivate;
+            _health.OnDie += _gameManager.OnAddCoins;
             _health.OnTakeDamage += _uiDamageViewer.DamageValueEffect;
             _health.OnDamageDetected += _fighter.OnEnemyFoundedOnShoot;
             _health.OnHealthChanged += _uiHealthView.HealthView;
@@ -86,6 +88,7 @@ namespace Enemy
             _health.OnDie -= _movement.Reset;
             _health.OnDie -= OnDie;
             _health.OnDie -= _uiWeaponView.Deactivate;
+            _health.OnDie -= _gameManager.OnAddCoins;
             _health.OnTakeDamage -= _uiDamageViewer.DamageValueEffect;
             _health.OnDamageDetected -= _fighter.OnEnemyFoundedOnShoot;
             _health.OnHealthChanged -= _uiHealthView.HealthView;

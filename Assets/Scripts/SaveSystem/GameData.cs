@@ -7,6 +7,6 @@ namespace SaveSystem
     {
         public int coins = 0;
         public int gems = 0;
-        public int level = 0;
+        public int level = 1;
     }
 }

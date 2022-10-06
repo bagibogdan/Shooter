@@ -27,7 +27,7 @@ namespace Enemy
         private NavMeshAgent _navMeshAgent;
         private bool _isMoving;
         private bool _isLooking;
-
+        
         private void Awake()
         {
             _navMeshAgent = GetComponent<NavMeshAgent>();

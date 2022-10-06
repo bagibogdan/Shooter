@@ -1,6 +1,9 @@
+using System;
+using Components;
 using UnityEngine;
 using Zenject;
 using Configs;
+using Level;
 using UI;
 using Weapons;
 
@@ -8,6 +11,10 @@ namespace Player
 {
     public class PlayerController : MonoBehaviour
     {
+        public event Action OnWin;
+        public event Action OnLose;
+
+        private LevelController _levelController;
         private PlayerConfig _playerConfig;
         private PlayerMovement _movement;
         private Fighter _fighter;
@@ -100,7 +107,9 @@ namespace Player
 
         private void OnDie()
         {
+            DeactivateMoving();
             GetComponent<Collider>().enabled = false;
+            OnLose?.Invoke();
         }
         
         public void ActivateMoving()
@@ -108,9 +117,27 @@ namespace Player
             _movement.ActivateMoving();
         }
 
-        public void DeactivateMoving()
+        private void DeactivateMoving()
         {
             _movement.DeactivateMoving();
+        }
+        
+        public void Restart()
+        {
+            _fighter.Initialize();
+            _health.Initialize(_playerConfig.MaxHealth);
+            _uiHealthView.Initialize(_health);
+            _uiWeaponView.Initialize(_weapon);
+            _animation.SetWalkMoveAnimation();
+            _animation.SetIdleAnimation();
+        }
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.GetComponent<FinishComponent>() != null)
+            {
+                _movement.DeactivateMoving();
+                OnWin?.Invoke();
+            }
         }
     }
 }
